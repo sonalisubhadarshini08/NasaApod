@@ -25,19 +25,6 @@ The app fetches data from the NASA APOD API and displays the image along with it
 
 ---
 
-## Project Structure
-
-│
-├── public/
-│ └── apodselect.html
-│
-├── app.js
-├── package.json
-└── README.md
-
-
----
-
 ## Installation
 
 1. Clone the repository
