@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA APOD Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .input-section {
+            margin-bottom: 40px;
+        }
+
+        .date-input {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 220px;
+            margin-right: 10px;
+        }
+
+        .date-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #ffeb3b;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.3);
+        }
+
+        .get-image-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .get-image-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error {
+            color: #ff4757;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #ff4757;
+            display: none;
+        }
+
+        .result {
+            margin-top: 40px;
+            min-height: 450px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 NASA Astronomy Picture of the Day</h1>
+        
+        <div class="input-section">
+            <input type="date" id="dateInput" class="date-input" max="2026-01-20">
+            <button onclick="getAPOD()" class="get-image-btn">Get Picture</button>
+        </div>
+
+        <div id="loading" class="loading">Loading cosmic wonders... ✨</div>
+        <div id="error" class="error"></div>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Set default date to yesterday
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            today.setDate(today.getDate() - 1);
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('dateInput').value = `${year}-${month}-${day}`;
+        });
+
+        function getAPOD() {
+            const dateInput = document.getElementById('dateInput');
+            const date = dateInput.value;
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const result = document.getElementById('result');
+
+            // Reset UI
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+            result.innerHTML = '';
+
+            if (!date) {
+                showError('Please select a date!');
+                loading.style.display = 'none';
+                return;
+            }
+
+            // Create form and submit to your exact backend endpoint
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/';
+            form.style.display = 'none';
+
+            const dateField = document.createElement('input');
+            dateField.type = 'hidden';
+            dateField.name = 'date';
+            dateField.value = date;
+            form.appendChild(dateField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
