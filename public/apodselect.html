@@ -1,171 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA APOD Viewer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA APOD Viewer</title>
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+  <style>
+    :root {
+      --bg-dark: #0b1020;
+      --card-bg: #12182f;
+      --accent: #4fc3f7;
+      --text-light: #eaeaf0;
+      --text-muted: #a5aac4;
+      --radius: 14px;
+    }
 
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            text-align: center;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-        }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #16204a, var(--bg-dark));
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
 
-        .input-section {
-            margin-bottom: 40px;
-        }
+    .app {
+      max-width: 1000px;
+      width: 100%;
+    }
 
-        .date-input {
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            border: 2px solid #00d4ff;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            width: 220px;
-            margin-right: 10px;
-        }
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
 
-        .date-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+    }
 
-        .date-input:focus {
-            outline: none;
-            border-color: #ffeb3b;
-            box-shadow: 0 0 15px rgba(255, 235, 59, 0.3);
-        }
+    header p {
+      color: var(--text-muted);
+    }
 
-        .get-image-btn {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            background: linear-gradient(45deg, #ff6b35, #f7931e);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
+    .card {
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
 
-        .get-image-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-        }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
 
-        .loading {
-            font-size: 1.2rem;
-            color: #00d4ff;
-            margin-top: 20px;
-            display: none;
-        }
+    input[type="date"] {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #2b3260;
+      background: #0e1430;
+      color: var(--text-light);
+      font-size: 1rem;
+    }
 
-        .error {
-            color: #ff4757;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 71, 87, 0.1);
-            border-radius: 10px;
-            border-left: 4px solid #ff4757;
-            display: none;
-        }
+    input[type="date"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
 
-        .result {
-            margin-top: 40px;
-            min-height: 450px;
-        }
-    </style>
+    button {
+      padding: 12px 22px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), #81d4fa);
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(79, 195, 247, 0.4);
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .loading {
+      color: var(--accent);
+    }
+
+    .error {
+      color: #ff6b6b;
+    }
+
+    /* ===== RESULT LAYOUT ===== */
+
+    .result {
+      margin-top: 32px;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      animation: fadeUp 0.5s ease;
+    }
+
+    .image-wrapper {
+      flex: 1;
+      background: #000;
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      height: auto;
+      max-height: 450px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .text-wrapper {
+      flex: 1;
+      text-align: left;
+    }
+
+    .text-wrapper h2 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .text-wrapper p {
+      line-height: 1.8;
+      font-size: 1rem;
+      color: var(--text-light);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile layout */
+    @media (max-width: 768px) {
+      .result {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌌 NASA Astronomy Picture of the Day</h1>
-        
-        <div class="input-section">
-            <input type="date" id="dateInput" class="date-input" max="2026-01-20">
-            <button onclick="getAPOD()" class="get-image-btn">Get Picture</button>
-        </div>
+  <div class="app">
+    <header>
+      <h1>NASA Astronomy Picture of the Day</h1>
+      <p>Explore the universe, one day at a time</p>
+    </header>
 
-        <div id="loading" class="loading">Loading cosmic wonders... ✨</div>
-        <div id="error" class="error"></div>
-        
-        <div id="result" class="result"></div>
+    <div class="card">
+      <div class="controls">
+        <input type="date" id="dateInput" max="2026-01-20" />
+        <button onclick="getAPOD()">View Picture</button>
+      </div>
+
+      <div id="loading" class="status loading">
+        Loading space content…
+      </div>
+
+      <div id="error" class="status error"></div>
+
+      <!-- BACKEND RESPONSE WILL REPLACE THIS -->
+      <div id="result"></div>
     </div>
 
-    <script>
-        // Set default date to yesterday
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date();
-            today.setDate(today.getDate() - 1);
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            document.getElementById('dateInput').value = `${year}-${month}-${day}`;
-        });
+    <footer>
+      Data provided by NASA APOD API
+    </footer>
+  </div>
 
-        function getAPOD() {
-            const dateInput = document.getElementById('dateInput');
-            const date = dateInput.value;
-            const loading = document.getElementById('loading');
-            const errorDiv = document.getElementById('error');
-            const result = document.getElementById('result');
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      document.getElementById("dateInput").value =
+        yesterday.toISOString().split("T")[0];
+    });
 
-            // Reset UI
-            loading.style.display = 'block';
-            errorDiv.style.display = 'none';
-            result.innerHTML = '';
+    function getAPOD() {
+      const date = document.getElementById("dateInput").value;
+      const loading = document.getElementById("loading");
+      const error = document.getElementById("error");
 
-            if (!date) {
-                showError('Please select a date!');
-                loading.style.display = 'none';
-                return;
-            }
+      if (!date) {
+        error.textContent = "Please select a date.";
+        error.style.display = "block";
+        return;
+      }
 
-            // Create form and submit to your exact backend endpoint
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/';
-            form.style.display = 'none';
+      loading.style.display = "block";
+      error.style.display = "none";
 
-            const dateField = document.createElement('input');
-            dateField.type = 'hidden';
-            dateField.name = 'date';
-            dateField.value = date;
-            form.appendChild(dateField);
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "/";
+      form.style.display = "none";
 
-            document.body.appendChild(form);
-            form.submit();
-        }
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "date";
+      input.value = date;
 
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-    </script>
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  </script>
 </body>
 </html>
