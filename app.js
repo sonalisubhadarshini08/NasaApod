@@ -20,7 +20,13 @@ app.post("/",(req,res)=>{
     https.get(url,(response)=>{
         response.on("data",(data)=>{
             jsonData = JSON.parse(data);
-            const htmlresponse = `<div style="display:flex; flex-direction:row;align-items:center; justify-content:center;"><img src = "${jsonData.hdurl}" alt="image" height="400px" width="400px">
+            const htmlresponse = `<div style="display:flex;
+            flex-direction:column;
+            align-items:center; 
+            justify-content:center;
+            gap: 20px;
+            padding: 10px;">
+            <img src = "${jsonData.hdurl}" alt="image" height="500px" width="500px">
             <p>${jsonData.explanation}</p></div>`
             res.send(htmlresponse)
         })
